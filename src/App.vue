@@ -17,6 +17,7 @@
 import LayoutBase from './components/LayoutBase.vue';
 import UiAlert from './components/UiAlert.vue';
 import { httpClient } from './api/httpClient/httpClient.js';
+import { useHeadTitle } from './plugins/headTitle/index.js';
 
 export default {
   name: 'App',
@@ -27,7 +28,12 @@ export default {
   },
 
   setup() {
-    // TODO: Установить <title> - "Meetups"
+      const addTitle = useHeadTitle();
+     
+      const changeTitle = () => addTitle('meetups');
+
+      changeTitle();
+    
 
     // TODO: для авторизованных пользователей - запросить новые данные пользователя для актуализации и проверки актуальности
 
@@ -41,6 +47,10 @@ export default {
 
     // TODO: обработка глобальных ошибок - необработанные исключения можно залогировать и вывести тост
     // TODO: глобальные ошибки можно поймать событиями "error" и "unhandledrejection"
+
+    return {
+      changeTitle,
+    }
   },
 };
 </script>
