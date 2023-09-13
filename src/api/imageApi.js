@@ -6,5 +6,15 @@ import { httpClient } from './httpClient/httpClient.js';
  * @returns {Promise<ResultContainer<ImageDto>>}
  */
 export function postImage(file) {
-  // TODO: реализовать функцию
+  const formData = new FormData();
+  formData.append('image', file);
+
+  return httpClient.post('/images/upload', formData)
+  .then((response) => {
+      const imageDto = response.data;
+      console.log(imageDto);
+  })
+  .catch((error) => {
+      console.log(error);
+  })
 }
