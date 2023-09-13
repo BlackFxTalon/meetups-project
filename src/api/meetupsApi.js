@@ -38,7 +38,22 @@ export function postMeetup(meetup) {
  * @returns {Promise<ResultContainer<Meetup>>}
  */
 export function putMeetup(meetup) {
-  // TODO: реализовать функцию
+  return httpClient.put(`/meetups/${meetup}`)
+  .then((response) => {
+    response.json()
+  })
+  .then((data) => {
+    return {
+      success: true,
+      data: data,
+    };
+  })
+  .catch((error) => {
+    return {
+      success: false,
+      error: error.message,
+    };
+  });
 }
 
 /**
