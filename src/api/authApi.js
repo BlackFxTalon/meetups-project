@@ -25,7 +25,9 @@ export function loginUser(email, password) {
  * @returns {Promise<ResultContainer<User>>}
  */
 export function registerUser(user) {
-  return httpClient.post('/auth/register', user);
+  return httpClient.post('/auth/register', user)
+  .then(response => createSuccessResult(user, response))
+  .catch(error => createErrorResult(error, user));
 }
 
 /**
