@@ -23,7 +23,13 @@ export function getMeetup(id) {
  * @returns {Promise<ResultContainer<Meetup>>}
  */
 export function postMeetup(meetup) {
-  // TODO: реализовать функцию
+  return httpClient.post('/meetups', meetup)
+  .then((response) => {
+    console.log(response);
+  })
+  .catch((error) => {
+    console.log(error);
+  });
 }
 
 /**
