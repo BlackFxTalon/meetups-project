@@ -23,13 +23,7 @@ export function getMeetup(id) {
  * @returns {Promise<ResultContainer<Meetup>>}
  */
 export function postMeetup(meetup) {
-  return httpClient.post('/meetups', meetup)
-  .then((response) => {
-    console.log(response);
-  })
-  .catch((error) => {
-    console.log(error);
-  });
+  return httpClient.post('/meetups', meetup);
 }
 
 /**
@@ -38,22 +32,7 @@ export function postMeetup(meetup) {
  * @returns {Promise<ResultContainer<Meetup>>}
  */
 export function putMeetup(meetup) {
-  return httpClient.put(`/meetups/${meetup}`)
-  .then((response) => {
-    response.json()
-  })
-  .then((data) => {
-    return {
-      success: true,
-      data: data,
-    };
-  })
-  .catch((error) => {
-    return {
-      success: false,
-      error: error.message,
-    };
-  });
+  return httpClient.put(`/meetups/${meetup}`);
 }
 
 /**
@@ -62,7 +41,7 @@ export function putMeetup(meetup) {
  * @returns {Promise<ResultContainer<void>>}
  */
 export function deleteMeetup(id) {
-  // TODO: реализовать функцию
+  return httpClient.delete(`/meetups/${id}`);
 }
 
 /**
@@ -71,7 +50,7 @@ export function deleteMeetup(id) {
  * @returns {Promise<ResultContainer<void>>}
  */
 export function attendMeetup(id) {
-  // TODO: реализовать функцию
+  return httpClient.post(`/meetups/${id}/participation`);
 }
 
 /**
@@ -80,5 +59,5 @@ export function attendMeetup(id) {
  * @returns {Promise<ResultContainer<void>>}
  */
 export function leaveMeetup(id) {
-  // TODO: реализовать функцию
+  return httpClient.delete(`/meetups/${id}/participation`);
 }
