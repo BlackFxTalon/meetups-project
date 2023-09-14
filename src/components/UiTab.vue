@@ -1,12 +1,20 @@
 <template>
-  <div>Task UiTabs</div>
+  <RouterLink class="tabs__tab" :to="to" role="tab" activeClass="tabs__tab_active">
+    <slot></slot>
+  </RouterLink>
 </template>
 
 <script>
-// TODO: Task UiTabs
+import { RouterLink } from 'vue-router';
 
 export default {
   name: 'UiTab',
+
+  props: {
+    to: {
+       type: [String, Object]
+    }
+  },
 };
 </script>
 
