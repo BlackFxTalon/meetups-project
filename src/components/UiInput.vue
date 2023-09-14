@@ -1,12 +1,51 @@
 <template>
-  <div>Task 06-wrappers/03-UiInput</div>
+  <div class="input-group"
+  :class="{
+    'input-group_icon': $slots['left-icon'] || $slots['right-icon'], 
+    'input-group_icon-left': $slots['left-icon'],
+    'input-group_icon-right': $slots['right-icon'],
+    }"
+  >
+    <div class="input-group__icon" v-if="$slots['left-icon']">
+      <slot name="left-icon" />
+    </div>
+
+    <component 
+    :is="multiline ? 'textarea' : 'input'"
+    ref="input"
+    class="form-control"
+    v-bind="$attrs"
+    :class="{'form-control_sm': small, 'form-control_rounded': rounded}"
+    :value="modelValue"
+    @input="$emit('update:modelValue', $event.target.value)"
+    />
+
+    <div class="input-group__icon" v-if="$slots['right-icon']">
+      <slot name="right-icon" />
+    </div>
+  </div>
 </template>
 
 <script>
-// TODO: Task 06-wrappers/03-UiInput
-
 export default {
   name: 'UiInput',
+
+  inheritAttrs: false,
+
+  props: {
+     small: Boolean,
+     rounded: Boolean,
+     multiline: Boolean,
+     modelValue: String
+  },
+
+  emits:['update:modelValue'],
+
+  methods: {
+    focus() {
+       this.$refs.input.focus();
+    },
+  }
 };
 </script>
 
