@@ -1,12 +1,25 @@
 <template>
-  <div><slot /> (Task 04-vue-cli/01-UiFormGroup1)</div>
+  <div class="form-group" :class="{'form-group_inline': inline}">
+    <!-- form-group_inline -->
+    <label class="form-group__label" v-if="label">{{ label }}</label>
+    <!-- CONTENT -->
+    <slot></slot>
+  </div>
 </template>
 
 <script>
-// TODO: Task 04-vue-cli/01-UiFormGroup1
-
 export default {
   name: 'UiFormGroup',
+
+  props: {
+    inline: {
+      type: Boolean,
+      default: false
+    },
+    label: String,
+  },
+
+
 };
 </script>
 
