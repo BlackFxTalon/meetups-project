@@ -1,9 +1,14 @@
 <template>
-  <div>Task 02-components/05-MeetupAgenda</div>
+  <ul class="agenda">
+      <li class="agenda__item" v-for="(agendaItem,index) in agenda" :key="index">
+        <!-- meetup agenda item -->
+        <MeetupAgendaItem :agenda-item="agendaItem[index]" />
+      </li>
+  </ul>
 </template>
 
 <script>
-// TODO: Task 02-components/05-MeetupAgenda
+import MeetupAgendaItem from './MeetupAgendaItem.vue';
 
 export default {
   name: 'MeetupAgenda',
