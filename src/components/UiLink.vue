@@ -1,12 +1,19 @@
 <template>
-  <div><slot /> (Task 06-wrappers/01-UiLink)</div>
+  <component class="link" :is="tag">
+    <slot>Link!</slot>
+  </component>
 </template>
 
 <script>
-// TODO: Task 06-wrappers/01-UiLink
-
 export default {
   name: 'UiLink',
+
+  props: {
+    tag: {
+      type:[String, Object, Function],
+      default: 'router-link',
+    }
+  }
 };
 </script>
 
