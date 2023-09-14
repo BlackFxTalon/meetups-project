@@ -1,12 +1,89 @@
 <template>
-  <div>Task 06-wrappers/05-UiImageUploader</div>
+  <div class="image-uploader">
+    <label 
+    class="image-uploader__preview"
+    :class="{'image-uploader__preview-loading': loading}"
+    :style="selectedImage && `--bg-url: url(${selectedImage})`"
+    @click="removeImage"
+     >
+      <span class="image-uploader__text">
+        {{ !loading && !selectedImage ? 'Загрузить изображение' : 
+        loading ? 'Загрузка...' : 'Удалить изображение' }}
+      </span>
+      <input 
+      v-bind="$attrs"
+      ref="fileInput"
+      type="file" 
+      accept="image/*" 
+      class="image-uploader__input" 
+      @change="handleFileChange"
+      />
+    </label>
+  </div>
 </template>
 
 <script>
-// TODO: Task 06-wrappers/05-UiImageUploader
-
 export default {
   name: 'UiImageUploader',
+
+  inheritAttrs: false,
+
+  props: {
+     preview: String,
+     uploader: Function,
+  },
+
+  data() {
+    return {
+      selectedImage: this.preview || '',
+      loading: false,
+    }
+  },
+
+  emits: ['upload', 'error', 'select', 'remove'],
+
+  methods: {
+
+    handleFileChange(event) {
+      const file = event.target.files[0];
+      if (file) {
+        this.loading = true;
+        this.uploadFile(file);
+      }
+    },
+
+    async uploadFile(file) {
+      if (this.uploader) {
+        try {
+          const uploadResult = await this.uploader(file);
+          this.selectedImage = URL.createObjectURL(file);
+          this.$emit('upload', uploadResult);
+        } catch (error) {
+          this.$emit('error', error);
+          this.selectedImage = '';
+          this.$refs.fileInput.value = '';
+        } finally {
+          this.loading = false;
+        }
+      } else {
+        this.selectedImage = URL.createObjectURL(file);
+        this.loading = false;
+      }
+      this.$emit('select', file);
+    },
+
+    removeImage(event) {
+      if (this.selectedImage) {
+        event.preventDefault();
+        URL.revokeObjectURL(this.selectedImage);
+        this.selectedImage = '';
+        this.$refs.fileInput.value = '';
+        this.$emit('remove');
+      }
+    },
+
+  }
+
 };
 </script>
 
