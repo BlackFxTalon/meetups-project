@@ -1,7 +1,7 @@
 <template>
   <div class="agenda-item">
       <div class="agenda-item__col">
-        <UiIcon class="icon" alt="key" :src="`${selectedIcon}`"/>
+        <UiIcon alt="key" :src="`${selectedIcon}`"/>
       </div>
       <div class="agenda-item__col">{{ agendaItem.startsAt }} - {{ agendaItem.endsAt }}</div>
       <div class="agenda-item__col">
@@ -22,6 +22,10 @@ import { agendaItemIcons, agendaItemDefaultTitles } from '../services/meetupServ
 
 export default {
   name: 'MeetupAgendaItem',
+
+  components: {
+    UiIcon
+  },
 
   props: {
     agendaItem: {
