@@ -13,6 +13,10 @@ import MeetupAgendaItem from './MeetupAgendaItem.vue';
 export default {
   name: 'MeetupAgenda',
 
+  components: {
+    MeetupAgendaItem,
+  },
+
   props: {
     agenda: {
       type: Array,
