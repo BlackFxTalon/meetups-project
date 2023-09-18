@@ -1,24 +1,32 @@
 <template>
-  <div>Task 02-components/03-MeetupCover</div>
+   <div class="meetup-cover">
+        <h1 class="meetup-cover__title">{{ title }}</h1>
+    </div>
 </template>
 
 <script>
-// TODO: Task 02-components/03-MeetupCover
-
 export default {
   name: 'MeetupCover',
+
+  props: {
+    title: String,
+    image: String
+  },
+
+  computed: {
+    backgroundImage() {
+      return this.image ? `url(${this.image})` : 'var(--default-cover)';
+    }
+  }
 };
 </script>
 
 <style scoped>
 /* _meetup-cover.css */
-/* TODO: добавить v-bind в css */
-
 .meetup-cover {
-  --bg-url: var(--default-cover);
   background-size: cover;
   background-position: center;
-  background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), var(--bg-url);
+  background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), v-bind(backgroundImage);
   display: flex;
   flex-direction: column;
   align-items: center;
