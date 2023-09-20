@@ -1,8 +1,8 @@
 <template>
   <ul class="agenda">
-      <li class="agenda__item" v-for="(agendaItem,index) in agenda" :key="index">
+      <li class="agenda__item" v-for="agendaItem in agenda" :key="agendaItem.id">
         <!-- meetup agenda item -->
-        <MeetupAgendaItem :agenda-item="agendaItem[index]" />
+        <MeetupAgendaItem :agenda-item="agendaItem" />
       </li>
   </ul>
 </template>
