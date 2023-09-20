@@ -18,6 +18,9 @@ import LayoutBase from './components/LayoutBase.vue';
 import UiAlert from './components/UiAlert.vue';
 import { httpClient } from './api/httpClient/httpClient.js';
 import { useHeadTitle } from './plugins/headTitle/index.js';
+import { useToaster } from './plugins/toaster/index.js';
+import { useAuthStore } from './stores/useAuthStore.js';
+import { deleteUserData } from './services/authService';
 
 export default {
   name: 'App',
@@ -31,23 +34,45 @@ export default {
       const addTitle = useHeadTitle();
      
       addTitle('meetups');
+
+      const toaster = useToaster();
+
+      const authStore = useAuthStore();
     
 
-    // TODO: для авторизованных пользователей - запросить новые данные пользователя для актуализации и проверки актуальности
+    // для авторизованных пользователей - запросить новые данные пользователя для актуализации и проверки актуальности
 
     httpClient.onUnauthenticated(() => {
-      // TODO: сессия пользователя больше не валидна - нужна обработка потери авторизации
+      // сессия пользователя больше не валидна - нужна обработка потери авторизации
+      deleteUserData();
+      location.reload();
     });
 
     httpClient.onNetworkError(() => {
-      // TODO: проблема с сетью, стоит вывести тост пользователю
+      // проблема с сетью, стоит вывести тост пользователю
+      toaster.error('Проблема с интернет соединением');
     });
 
-    // TODO: обработка глобальных ошибок - необработанные исключения можно залогировать и вывести тост
-    // TODO: глобальные ошибки можно поймать событиями "error" и "unhandledrejection"
+    // обработка глобальных ошибок - необработанные исключения можно залогировать и вывести тост
+    // глобальные ошибки можно поймать событиями "error" и "unhandledrejection"
+
+    const globalErrorHandler = (err) => {
+      console.error(err);
+      toaster.error(err.message);
+    };
+    window.addEventListener('error', (err) => globalErrorHandler(err));
+    window.addEventListener('unhandledrejection', ({ reason: err }) => globalErrorHandler(err));
+
+    // user restore
+
+    if (authStore.isAuthenticated) {
+      authStore.restoreUser();
+    }
 
     return {
       addTitle,
+      toaster,
+      authStore,
     }
   },
 };
