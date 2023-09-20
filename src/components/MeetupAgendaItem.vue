@@ -1,7 +1,7 @@
 <template>
   <div class="agenda-item">
       <div class="agenda-item__col">
-        <UiIcon alt="key" :src="`${selectedIcon}`"/>
+        <UiIcon :src="selectedIcon"/>
       </div>
       <div class="agenda-item__col">{{ agendaItem.startsAt }} - {{ agendaItem.endsAt }}</div>
       <div class="agenda-item__col">
