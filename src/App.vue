@@ -30,9 +30,7 @@ export default {
   setup() {
       const addTitle = useHeadTitle();
      
-      const changeTitle = () => addTitle('meetups');
-
-      changeTitle();
+      addTitle('meetups');
     
 
     // TODO: для авторизованных пользователей - запросить новые данные пользователя для актуализации и проверки актуальности
@@ -49,7 +47,7 @@ export default {
     // TODO: глобальные ошибки можно поймать событиями "error" и "unhandledrejection"
 
     return {
-      changeTitle,
+      addTitle,
     }
   },
 };
