@@ -17,6 +17,7 @@
 
 <script>
 import UiIcon from './UiIcon.vue';
+import { formatAsLocalDate, formatAsIsoDate } from '../src/utils/dateUtils.js';
 
 export default {
   name: 'MeetupInfo',
@@ -31,15 +32,11 @@ export default {
 
   computed: {
     isoDate() {
-      return new Date(this.date).toISOString().split('T')[0];
+      return formatAsIsoDate(this.date);
     },
 
     localDate() {
-      return new Date(this.date).toLocaleString(navigator.language, {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      });
+      return formatAsLocalDate(this.date);
     },
 
 
