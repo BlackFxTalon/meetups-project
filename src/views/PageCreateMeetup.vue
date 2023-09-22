@@ -2,7 +2,7 @@
   <MeetupForm 
   :meetup="meetup" 
   submit-text="Создать" 
-  @submit="handleMeetupFormSubmit('create')"
+  @submit="handleSubmit"
   @cancel="$router.push({ name: 'index' })" 
   />
 </template>
@@ -10,12 +10,11 @@
 <script>
 import { ref } from 'vue';
 import MeetupForm from '../components/MeetupForm.vue';
+import LayoutMeetupForm from '../components/LayoutMeetupForm.vue';
 import { createMeetup } from '../services/meetupService.js';
+import { useLayout } from '../composables/useLayout.js';
+import { useMeetupFormSubmit } from '../composables/useMeetupFormSubmit.js';
 import { useHeadTitle } from './plugins/headTitle/index.js';
-import { useRouter } from 'vue-router';
-import { useApi } from './useApi.js';
-import { postMeetup, putMeetup } from '../api/meetupsApi.js';
-import { postImage } from '../api/imageApi.js';
 
 export default {
   name: 'PageCreateMeetup',
@@ -29,42 +28,15 @@ export default {
      
     addTitle('Создание митапа | Meetups');
 
+    useLayout(LayoutMeetupForm, { title: 'Создание митапа' });
+
     const meetup = ref(createMeetup());
 
-    function handleMeetupFormSubmit(action) {
-
-    const router = useRouter();
-
-  const { request: meetupRequest } = useApi(action === 'create' ? postMeetup : putMeetup, {
-    showProgress: true,
-    successToast: 'Сохранено',
-    errorToast: true,
-  });
-
-  const { request: imageRequest } = useApi(postImage, {
-    showProgress: true,
-    errorToast: true,
-  });
-
-  return async (newMeetup) => {
-    if (newMeetup.imageToUpload) {
-      const result = await imageRequest(newMeetup.imageToUpload);
-      if (!result.success) {
-        return;
-      }
-      newMeetup.imageId = result.data.id;
-      delete newMeetup.imageToUpload;
-    }
-    const result = await meetupRequest(newMeetup);
-    if (result.success) {
-      router.push({ name: 'meetup', params: { meetupId: result.data.id } });
-    }
-  };
-}
+    const handleSubmit = useMeetupFormSubmit('create');
 
     return {
       meetup,
-      handleMeetupFormSubmit,
+      handleSubmit,
     };
   },
 };
