@@ -1,15 +1,25 @@
 <template>
-  <MeetupForm v-if="meetup" :meetup="meetup" />
+  <MeetupForm 
+  v-if="meetup" 
+  :meetup="meetup" 
+  submit-text="Сохранить"
+  @submit="handleSubmit"
+  @cancel="$router.push({ name: 'meetup', params: { meetupId: meetupId } })"
+  />
   <UiContainer v-else>
     <UiAlert>Загрузка...</UiAlert>
   </UiContainer>
 </template>
 
 <script>
-import { ref } from 'vue';
+import LayoutMeetupForm from '../components/LayoutMeetupForm.vue';
 import MeetupForm from '../components/MeetupForm.vue';
 import UiAlert from '../components/UiAlert.vue';
 import UiContainer from '../components/UiContainer.vue';
+import { useHeadTitle } from './plugins/headTitle/index.js';
+import { useLayout } from '../composables/useLayout.js';
+import { useMeetupFormSubmit } from '../composables/useMeetupFormSubmit.js';
+import { useMeetupFetch } from '../composables/useMeetupFetch.js';
 
 export default {
   name: 'PageEditMeetup',
@@ -27,17 +37,21 @@ export default {
     },
   },
 
-  setup() {
-    // TODO: <title> "Редактирование митапа | Meetups"
-    // TODO: Добавить LayoutMeetupForm
+  setup(props) {
+      const addTitle = useHeadTitle();
+     
+    addTitle('Редактирование митапа | Meetups');
 
-    const meetup = ref(null);
+    useLayout(LayoutMeetupForm, { title: 'Редактирование митапа' });
 
-    // TODO: При сабмите формы редактирования митапа - обновить его через API и перейти на страницу изменённого митапа
-    // TODO: При нажатии на "Отмена" вернуться на страницу этого митапа
+
+    const { meetup } = useMeetupFetch(props.meetupId);
+
+    const handleSubmit = useMeetupFormSubmit('edit');
 
     return {
       meetup,
+      handleSubmit,
     };
   },
 };
