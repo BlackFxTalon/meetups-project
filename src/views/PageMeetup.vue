@@ -23,13 +23,14 @@
 </template>
 
 <script>
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 import MeetupView from '../components/MeetupView.vue';
 import UiContainer from '../components/UiContainer.vue';
 import UiAlert from '../components/UiAlert.vue';
 import UiTabs from '../components/UiTabs.vue';
 import UiTab from '../components/UiTab.vue';
 import { getMeetup } from '../api/meetupsApi.js';
+import { useHeadTitle } from './plugins/headTitle/index.js';
 
 export default {
   name: 'PageMeetup',
@@ -61,9 +62,14 @@ export default {
   },
 
   setup(props) {
-    // TODO: Установить <title> - "<название митапа> | Meetups"
     const meetup = ref(null);
     const error = ref(null);
+
+    const addTitle = useHeadTitle();
+
+    const meetupsTitle = computed(() => `${meetup.value?.title} | Meetups`);
+     
+    addTitle(meetupsTitle);
 
     const fetchMeetup = async () => {
       meetup.value = null;
