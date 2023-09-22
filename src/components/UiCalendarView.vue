@@ -3,27 +3,29 @@
     <div class="calendar-view__controls">
       <div class="calendar-view__controls-inner">
         <button class="calendar-view__control-left" type="button" aria-label="Previous month" @click="prevMonth"></button>
-        <div class="calendar-view__date">{{ currentMonth }}</div>
+        <div class="calendar-view__date">{{ localDate }}</div>
         <button class="calendar-view__control-right" type="button" aria-label="Next month" @click="nextMonth"></button>
       </div>
     </div>
 
     <div class="calendar-view__grid">
       <div 
-      v-for="day in days" 
-      :key="day.date" 
+      v-for="cell in calendarCells" 
+      :key="cell.timestamp" 
       class="calendar-view__cell"
-      :class="{'calendar-view__cell_inactive': !day.isCurrentMonth}"
+      :class="{'calendar-view__cell_inactive': !cell.isCurrentMonth}"
+      :aria-label="cell.localDateString"
+      tabindex="0"
       >
-        <div class="calendar-view__cell-day">{{ day.day }}</div>
+        <div class="calendar-view__cell-day">{{ cell.date }}</div>
         <div class="calendar-view__cell-content">
           <!-- Добавляем слот для данных в ячейке календаря -->
           <slot
-          :day="day"
-          :year="day.year"
-          :month="day.month"
-          :date="day.date"
-          :inactive="!day.isCurrentMonth"
+          :day="cell"
+          :year="cell.year"
+          :month="cell.month"
+          :date="cell.date"
+          :inactive="!cell.isCurrentMonth"
           >
           </slot>
         </div>
@@ -34,11 +36,7 @@
 </template>
 
 <script>
-import dayjs from "dayjs";
-import weekday from "dayjs/plugin/weekday";
-import "dayjs/locale/ru";
-
-dayjs.extend(weekday);
+import { addDays, addMonths, getFirstDateOfMonth, getLastDateOfMonth, getWeekday } from '../utils/dateUtils.js';
 
 
 export default {
@@ -53,137 +51,51 @@ export default {
 
   data() {
     return {
-      selectedDate: dayjs()
+      selectedDate: getFirstDateOfMonth(new Date()),
     };
   },
 
   computed: {
 
-    currentMonth() {
-      const currentMonthDate = this.selectedDate.toDate();
-      return currentMonthDate.toLocaleDateString(navigator.language, {
-  month: 'long',
-  year: 'numeric',
-});
-    },
-
-    days() {
-      return [
-        ...this.previousMonthDays,
-        ...this.currentMonthDays,
-        ...this.nextMonthDays,
-      ];
-     },
-
-    day() {
-      return Number(this.selectedDate.format("D"));
-    },
-
-    month() {
-      return Number(this.selectedDate.format("M"));
-    },
-
-    year() {
-      return Number(this.selectedDate.format("YYYY"));
-    },
-
-     numberOfDaysInMonth() {
-      return dayjs(this.selectedDate).daysInMonth();
-    },
-
-    currentMonthDays() {
-      return [...Array(this.numberOfDaysInMonth)].map((day, index) => {
-        return {
-          date: dayjs(`${this.year}-${this.month}-${index + 1}`).format(
-            "YYYY-MM-DD"
-          ),
-          day: dayjs(`${this.year}-${this.month}-${index + 1}`).format(
-            "D"
-          ),
-          isCurrentMonth: true
-        };
+    localDate() {
+      return this.selectedDate.toLocaleDateString(navigator.language, {
+        month: 'long',
+        year: 'numeric',
       });
     },
 
-    previousMonthDays() {
-      const firstDayOfTheMonthWeekday = this.getWeekday(
-        this.currentMonthDays[0].date
-      );
-      const previousMonth = dayjs(`${this.year}-${this.month}-01`).subtract(
-        1,
-        "month"
-      );
+    calendarCells() {
+      const lastDateOfMonth = getLastDateOfMonth(this.currentDate);
+      const startDate = addDays(this.currentDate, -(getWeekday(this.currentDate) - 1));
+      const finishDate = addDays(lastDateOfMonth, 7 - getWeekday(lastDateOfMonth));
 
-      // Cover first day of the month being sunday (firstDayOfTheMonthWeekday === 0)
-      const visibleNumberOfDaysFromPreviousMonth = firstDayOfTheMonthWeekday
-        ? firstDayOfTheMonthWeekday - 1
-        : 6;
+      const cells = [];
 
-      const previousMonthLastMondayDayOfMonth = dayjs(
-        this.currentMonthDays[0].date
-      )
-        .subtract(visibleNumberOfDaysFromPreviousMonth, "day")
-        .date();
+      for (let dayOfCalendar = startDate; dayOfCalendar <= finishDate; dayOfCalendar = addDays(dayOfCalendar, 1)) {
+        cells.push({
+          timestamp: +dayOfCalendar,
+          year: dayOfCalendar.getUTCFullYear(),
+          month: dayOfCalendar.getUTCMonth(),
+          date: dayOfCalendar.getUTCDate(),
+          isCurrentMonth: dayOfCalendar.getUTCMonth() === this.currentDate.getUTCMonth(),
+          localDateString: dayOfCalendar.toLocaleDateString(navigator.language, { dateStyle: 'long' }),
+        });
+      }
 
-      return [...Array(visibleNumberOfDaysFromPreviousMonth)].map(
-        (day, index) => {
-          return {
-            date: dayjs(
-              `${previousMonth.year()}-${previousMonth.month() +
-                1}-${previousMonthLastMondayDayOfMonth + index}`
-            ).format("YYYY-MM-DD"),
-            day: dayjs(`${previousMonth.year()}-${previousMonth.month() +
-                1}-${previousMonthLastMondayDayOfMonth + index}`).format(
-            "D"
-          ),
-            isCurrentMonth: false
-          };
-        }
-      );
+      return cells;
     },
-
-    nextMonthDays() {
-      const lastDayOfTheMonthWeekday = this.getWeekday(
-        `${this.year}-${this.month}-${this.currentMonthDays.length}`
-      );
-
-      const nextMonth = dayjs(`${this.year}-${this.month}-01`).add(1, "month");
-
-      const visibleNumberOfDaysFromNextMonth = lastDayOfTheMonthWeekday
-        ? 7 - lastDayOfTheMonthWeekday
-        : lastDayOfTheMonthWeekday;
-
-      return [...Array(visibleNumberOfDaysFromNextMonth)].map((day, index) => {
-        return {
-          date: dayjs(
-            `${nextMonth.year()}-${nextMonth.month() + 1}-${index + 1}`
-          ).format("YYYY-MM-DD"),
-          day: dayjs(`${nextMonth.year()}-${nextMonth.month() + 1}-${index + 1}`).format(
-            "D"
-          ),
-          isCurrentMonth: false
-        };
-      });
-    },
-
   },
 
   methods: {
     prevMonth() {
-      this.selectedDate = dayjs(this.selectedDate).subtract(1, "month");
+      this.selectedDate = addMonths(this.selectedDate, -1);
     },
 
     nextMonth() {
-      this.selectedDate = dayjs(this.selectedDate).add(1, "month");
-    },
-
-    getWeekday(date) {
-      return dayjs(date).weekday();
+      this.selectedDate = addMonths(this.selectedDate, 1);
     },
 
   },
-
-
 };
 </script>
 
