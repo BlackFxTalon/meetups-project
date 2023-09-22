@@ -1,10 +1,10 @@
 <template>
-  <UiCalendarView v-slot="{ day }">
+  <UiCalendarView v-slot="{ timestamp }">
     <UiCalendarEvent 
-    v-for="meetup in getMeetupsForDay[day.date]"
-    tag="a"
+    v-for="meetup in getMeetupsForDay[timestamp]"
+    tag="RouterLink"
     :key="meetup.id" 
-    :href="`/meetups/${meetup.id}`"
+    :to="{ name: 'meetup', params: { meetupId: meetup.id } }"
     >
       {{ meetup.title }}
     </UiCalendarEvent>
@@ -14,7 +14,6 @@
 <script>
 import UiCalendarView from './UiCalendarView.vue';
 import UiCalendarEvent from './UiCalendarEvent.vue';
-import dayjs from "dayjs";
 
 export default {
   name: 'MeetupsCalendar',
@@ -37,11 +36,10 @@ export default {
     const meetupsByDate = {};
 
     for (const meetup of this.meetups) {
-        const formattedDate = dayjs(meetup.date).format("YYYY-MM-DD");
-        if (!meetupsByDate[formattedDate]) {
-          meetupsByDate[formattedDate] = [];
+        if (!meetupsByDate[meetup.date]) {
+          meetupsByDate[meetup.date] = [];
         }
-        meetupsByDate[formattedDate].push(meetup);
+        meetupsByDate[meetup.date].push(meetup);
       }
 
       return meetupsByDate;
