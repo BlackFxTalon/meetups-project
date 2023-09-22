@@ -11,6 +11,7 @@
 
 <script>
 import UiContainer from '../components/UiContainer.vue';
+import { useHeadTitle } from './plugins/headTitle/index.js';
 
 export default {
   name: 'PageNotFound',
@@ -20,7 +21,9 @@ export default {
   },
 
   setup() {
-    // TODO: <title> "Страница не найдена | Meetups"
+      const addTitle = useHeadTitle();
+
+      addTitle('Страница не найдена | Meetups');
   },
 };
 </script>
