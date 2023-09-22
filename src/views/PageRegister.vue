@@ -22,21 +22,26 @@
 
     <template #append>
       Уже есть аккаунт?
-      <UiLink to="/login">Войдите</UiLink>
+      <UiLink :to="{ name: 'login' }">Войдите</UiLink>
     </template>
   </UiForm>
 </template>
 
 <script>
-// TODO: Task 05-vue-router/01-AuthPages
-// TODO: Добавить именованные маршруты
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useHeadTitle } from './plugins/headTitle/index.js';
 import UiFormGroup from '../components/UiFormGroup.vue';
+import LayoutAuth from '../components/LayoutAuth.vue';
 import UiInput from '../components/UiInput.vue';
 import UiCheckbox from '../components/UiCheckbox.vue';
 import UiLink from '../components/UiLink.vue';
 import UiButton from '../components/UiButton.vue';
 import UiForm from '../components/UiForm.vue';
+import { useToaster } from '../plugins/toaster/index.js';
+import { registerUser } from '../api/authApi.js';
+import { useApi } from '../composables/useApi.js';
+import { useLayout } from '../composables/useLayout.js';
 
 export default {
   name: 'PageRegister',
@@ -51,8 +56,20 @@ export default {
   },
 
   setup() {
-    // TODO: <title> "Регистрация | Meetups"
-    // TODO: Добавить LayoutAuth
+    const addTitle = useHeadTitle();
+
+    addTitle('Регистрация | Meetups');
+    
+    useLayout(LayoutAuth, { title: 'Регистрация' });
+
+    const router = useRouter();
+    const toaster = useToaster();
+
+    const { result, request } = useApi(registerUser, {
+      showProgress: true,
+      successToast: 'Регистрация выполнена успешно',
+      errorToast: true,
+    });
 
     const email = ref('');
     const fullname = ref('');
@@ -72,17 +89,17 @@ export default {
     const handleSubmit = async () => {
       const validationError = validate();
       if (validationError) {
-        // TODO: Вывести тост с текстом ошибки
+        toaster.error(validationError);
         return;
       }
-      /*
-        TODO: Добавить обработчик сабмита
-              - В случае успешной регистрации:
-                - Перейти на страницу входа (Task 05-vue-router/01-AuthPages)
-                - Вывести тост "Регистрация выполнена успешно"
-              - В случае неуспешной регистрации:
-                - Вывести тост с текстом ошибки с API
-       */
+       await request({
+        email: email.value,
+        fullname: fullname.value,
+        password: password.value,
+      });
+      if (result.value.success) {
+        await router.push({ name: 'login' });
+      }
     };
 
     return {
