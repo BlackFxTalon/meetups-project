@@ -11,7 +11,7 @@
 
 <script>
 import UiContainer from '../components/UiContainer.vue';
-import { useHeadTitle } from './plugins/headTitle/index.js';
+import { useHeadTitle } from '../plugins/headTitle/index.js';
 
 export default {
   name: 'PageNotFound',

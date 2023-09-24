@@ -23,7 +23,9 @@ export default {
 <style scoped>
 /* _form.css */
 .form {
-  margin: 0;
+  margin: 0 auto;
+  margin-top: 1rem;
+  max-width: 800px;
 }
 
 .form__buttons {

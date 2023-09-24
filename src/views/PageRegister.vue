@@ -1,4 +1,5 @@
 <template>
+  <LayoutAuth title="Регистрация">
   <UiForm>
     <UiFormGroup label="Email">
       <UiInput v-model="email" name="email" type="email" required />
@@ -25,12 +26,13 @@
       <UiLink :to="{ name: 'login' }">Войдите</UiLink>
     </template>
   </UiForm>
+  </LayoutAuth>
 </template>
 
 <script>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { useHeadTitle } from './plugins/headTitle/index.js';
+import { useHeadTitle } from '../plugins/headTitle/index.js';
 import UiFormGroup from '../components/UiFormGroup.vue';
 import LayoutAuth from '../components/LayoutAuth.vue';
 import UiInput from '../components/UiInput.vue';
@@ -41,7 +43,6 @@ import UiForm from '../components/UiForm.vue';
 import { useToaster } from '../plugins/toaster/index.js';
 import { registerUser } from '../api/authApi.js';
 import { useApi } from '../composables/useApi.js';
-import { useLayout } from '../composables/useLayout.js';
 
 export default {
   name: 'PageRegister',
@@ -53,14 +54,13 @@ export default {
     UiCheckbox,
     UiInput,
     UiFormGroup,
+    LayoutAuth
   },
 
   setup() {
     const addTitle = useHeadTitle();
 
     addTitle('Регистрация | Meetups');
-    
-    useLayout(LayoutAuth, { title: 'Регистрация' });
 
     const router = useRouter();
     const toaster = useToaster();

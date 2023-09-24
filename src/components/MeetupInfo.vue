@@ -17,7 +17,7 @@
 
 <script>
 import UiIcon from './UiIcon.vue';
-import { formatAsLocalDate, formatAsIsoDate } from '../src/utils/dateUtils.js';
+import { formatAsLocalDate, formatAsIsoDate } from '../utils/dateUtils.js';
 
 export default {
   name: 'MeetupInfo',

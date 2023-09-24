@@ -1,4 +1,5 @@
 <template>
+  <LayoutAuth title="Войти">
   <UiForm>
     <UiFormGroup label="Email">
       <UiInput v-model="email" name="email" type="email" placeholder="demo@email" required />
@@ -13,12 +14,13 @@
 
     <template #append> Нет аккаунта? <UiLink :to="{ name: 'register' }" class="link">Зарегистрируйтесь</UiLink> </template>
   </UiForm>
+  </LayoutAuth>
 </template>
 
 <script>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { useHeadTitle } from './plugins/headTitle/index.js';
+import { useHeadTitle } from '../plugins/headTitle/index.js';
 import UiFormGroup from '../components/UiFormGroup.vue';
 import UiLink from '../components/UiLink.vue';
 import UiInput from '../components/UiInput.vue';
@@ -26,7 +28,6 @@ import UiButton from '../components/UiButton.vue';
 import UiForm from '../components/UiForm.vue';
 import LayoutAuth from '../components/LayoutAuth.vue';
 import { useAuthStore } from '../stores/useAuthStore.js';
-import { useLayout } from '../composables/useLayout.js';
 import { useApi } from '../composables/useApi.js';
 import { loginUser } from '../api/authApi.js';
 
@@ -39,6 +40,7 @@ export default {
     UiInput,
     UiLink,
     UiFormGroup,
+    LayoutAuth
   },
 
   props: {
@@ -52,8 +54,6 @@ export default {
     const addTitle = useHeadTitle();
      
     addTitle('Вход | Meetups');
-
-    useLayout(LayoutAuth, { title: 'Вход' });
 
     const authStore = useAuthStore();
     const router = useRouter();

@@ -71,7 +71,7 @@ export const routes = [
     meta: {
       requireAuth: true,
     },
-    component: () => import('../views/PageMeetupCreate.vue'),
+    component: () => import('../views/PageCreateMeetup.vue'),
   },
   {
     path: '/meetups/:meetupId(\\d+)/edit',

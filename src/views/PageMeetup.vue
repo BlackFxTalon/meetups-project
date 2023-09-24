@@ -30,7 +30,7 @@ import UiAlert from '../components/UiAlert.vue';
 import UiTabs from '../components/UiTabs.vue';
 import UiTab from '../components/UiTab.vue';
 import { getMeetup } from '../api/meetupsApi.js';
-import { useHeadTitle } from './plugins/headTitle/index.js';
+import { useHeadTitle } from '../plugins/headTitle/index.js';
 
 export default {
   name: 'PageMeetup',

@@ -19,7 +19,7 @@
       <RouterLink :to="{ name: 'createMeetup' }" class="nav__link">
         Создать митап
       </RouterLink>
-    <a href="#" class="nav__link" @click.prevent="logout">{{ user.fullname }} (выйти)</a>
+    <a href="#" class="nav__link" @click.prevent="logout">{{ user }} (выйти)</a>
     </template>
     <!-- Ссылка - не часть проекта -->
     <RouterLink :to="{ name: 'demo' }" class="nav__link">🎨 Components Demo</RouterLink>

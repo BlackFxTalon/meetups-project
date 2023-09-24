@@ -1,4 +1,5 @@
 <template>
+  <LayoutMeetupForm title="Редактирование митапа">
   <MeetupForm 
   v-if="meetup" 
   :meetup="meetup" 
@@ -9,6 +10,7 @@
   <UiContainer v-else>
     <UiAlert>Загрузка...</UiAlert>
   </UiContainer>
+   </LayoutMeetupForm>
 </template>
 
 <script>
@@ -16,8 +18,7 @@ import LayoutMeetupForm from '../components/LayoutMeetupForm.vue';
 import MeetupForm from '../components/MeetupForm.vue';
 import UiAlert from '../components/UiAlert.vue';
 import UiContainer from '../components/UiContainer.vue';
-import { useHeadTitle } from './plugins/headTitle/index.js';
-import { useLayout } from '../composables/useLayout.js';
+import { useHeadTitle } from '../plugins/headTitle/index.js';
 import { useMeetupFormSubmit } from '../composables/useMeetupFormSubmit.js';
 import { useMeetupFetch } from '../composables/useMeetupFetch.js';
 
@@ -28,6 +29,7 @@ export default {
     UiAlert,
     UiContainer,
     MeetupForm,
+    LayoutMeetupForm
   },
 
   props: {
@@ -41,9 +43,6 @@ export default {
       const addTitle = useHeadTitle();
      
     addTitle('Редактирование митапа | Meetups');
-
-    useLayout(LayoutMeetupForm, { title: 'Редактирование митапа' });
-
 
     const { meetup } = useMeetupFetch(props.meetupId);
 
